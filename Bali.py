@@ -55,9 +55,10 @@ class BaliHotelRec:
         query = st.sidebar.text_area("Input your search here", 'Hotels near Uluwatu Temple')
 
         if not query:
-            st.sidebar.warning("You have not searched for anything yet!")
+            return ""
 
-        return query
+        else:
+            return query
 
     def plot_wordCloud(self, corpus):
         # Create and generate a word cloud image:
@@ -73,26 +74,30 @@ class BaliHotelRec:
 
     def get_recs(self):
         # Get hotel recommendations
-        query = self.construct_sidebar()
-        corpus, corpus_embeddings, aggregate_reviews, aggregate_summary = self.load_data()
-        query_embedding = self.embedder.encode(query, convert_to_tensor=True)
+        q = self.construct_sidebar()
+        if not q:
+            st.write('You have not searched for anything yet!')
+        else:
+            query = q
+            corpus, corpus_embeddings, aggregate_reviews, aggregate_summary = self.load_data()
+            query_embedding = self.embedder.encode(query, convert_to_tensor=True)
 
-        # We use cosine-similarity and torch.topk to find the highest scores
-        cos_scores = util.pytorch_cos_sim(query_embedding, corpus_embeddings)[0]
-        top_results = torch.topk(cos_scores, k=3)
+            # We use cosine-similarity and torch.topk to find the highest scores
+            cos_scores = util.pytorch_cos_sim(query_embedding, corpus_embeddings)[0]
+            top_results = torch.topk(cos_scores, k=3)
 
-        st.subheader("Here are your top 3 recommendations for your search!")
-        st.markdown(" ")
-        st.markdown(" ")
+            st.subheader("Here are your top 3 recommendations for your search!")
+            st.markdown(" ")
+            st.markdown(" ")
 
-        # Find the closest sentences of the corpus for each query sentence based on cosine similarity
-        for score, idx in zip(top_results[0], top_results[1]):
-            row_dict = aggregate_reviews.loc[aggregate_reviews['review_body'] == corpus[idx]]['hotelName'].values[0]
-            summary = aggregate_summary.loc[aggregate_summary['review_body'] == corpus[idx]]['summary']
-            st.write(HTML_WRAPPER.format(
-                "<b>Hotel Name:  </b>" + re.sub(r'[0-9]+', '', row_dict) + "(Score: {:.4f})".format(
-                    score) + "<br/><br/><b>Hotel Summary:  </b>" + summary.values[0]), unsafe_allow_html=True)
-            self.plot_wordCloud(corpus[idx])
+            # Find the closest sentences of the corpus for each query sentence based on cosine similarity
+            for score, idx in zip(top_results[0], top_results[1]):
+                row_dict = aggregate_reviews.loc[aggregate_reviews['review_body'] == corpus[idx]]['hotelName'].values[0]
+                summary = aggregate_summary.loc[aggregate_summary['review_body'] == corpus[idx]]['summary']
+                st.write(HTML_WRAPPER.format(
+                    "<b>Hotel Name:  </b>" + re.sub(r'[0-9]+', '', row_dict) + "(Score: {:.4f})".format(
+                        score) + "<br/><br/><b>Hotel Summary:  </b>" + summary.values[0]), unsafe_allow_html=True)
+                self.plot_wordCloud(corpus[idx])
 
     def construct_app(self):
         st.image('Uluwatu-Temple-Bali-Indonesia.jpg', caption='Uluwatu Temple, Bali, Indonesia')
@@ -119,9 +124,8 @@ class BaliHotelRec:
             """,
             unsafe_allow_html=True
         )
-        self.get_recs()
 
-        return self
+        return self.get_recs()
 
 
 bali = BaliHotelRec()
