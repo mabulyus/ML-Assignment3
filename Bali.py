@@ -59,7 +59,7 @@ class BaliHotelRec:
 
     def plot_wordCloud(self, corpus):
         # Create and generate a word cloud image:
-        wordcloud = WordCloud(max_font_size=35, max_words=35, background_color="white").generate(corpus)
+        wordcloud = WordCloud(max_font_size=35, max_words=35, background_color="black", colormap='Set2').generate(corpus)
 
         # Display the generated image:
         plt.imshow(wordcloud, interpolation='bilinear')
@@ -93,7 +93,7 @@ class BaliHotelRec:
             self.plot_wordCloud(corpus[idx])
 
     def construct_app(self):
-        st.image(['Uluwatu-Temple-Bali-Indonesia.jpg', 'Sukawati-Art-Market-Bali-Indonesia.jpg'], width=500)
+        st.image(['Uluwatu-Temple-Bali-Indonesia.jpg', 'Sukawati-Art-Market-Bali-Indonesia.jpg'], width=900)
         # st.image('Uluwatu-Temple-Bali-Indonesia.jpg', caption='Uluwatu Temple, Bali, Indonesia')
         st.markdown(
             """
