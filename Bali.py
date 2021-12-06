@@ -93,8 +93,7 @@ class BaliHotelRec:
             self.plot_wordCloud(corpus[idx])
 
     def construct_app(self):
-        st.image(['Uluwatu-Temple-Bali-Indonesia.jpg', 'Sukawati-Art-Market-Bali-Indonesia.jpg'], width=900)
-        # st.image('Uluwatu-Temple-Bali-Indonesia.jpg', caption='Uluwatu Temple, Bali, Indonesia')
+        st.image('Uluwatu-Temple-Bali-Indonesia.jpg', caption='Uluwatu Temple, Bali, Indonesia')
         st.markdown(
             """
             <style>
