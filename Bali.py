@@ -31,9 +31,9 @@ HTML_WRAPPER = """<div style="overflow-x: auto; border: 1px solid #e6e9ef; borde
 
 class BaliHotelRec:
 
-    def __init__(self):
+    #def __init__(self):
         # Define embedder
-        self.embedder = SentenceTransformer('sentence-transformers/paraphrase-xlm-r-multilingual-v1')
+       # self.embedder = SentenceTransformer('sentence-transformers/paraphrase-xlm-r-multilingual-v1')
 
     def load_data(self):
         # load the data from pickle files
@@ -73,11 +73,13 @@ class BaliHotelRec:
 
 
     def get_recs(self):
+
         # Get hotel recommendations
         q = self.construct_sidebar()
         if not q:
             st.write('You have not searched for anything yet!')
         else:
+            self.embedder = SentenceTransformer('sentence-transformers/paraphrase-xlm-r-multilingual-v1')
             query = q
             corpus, corpus_embeddings, aggregate_reviews, aggregate_summary = self.load_data()
             query_embedding = self.embedder.encode(query, convert_to_tensor=True)
